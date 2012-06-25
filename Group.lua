@@ -53,17 +53,3 @@ end
 function Group:mouse_released(ix, iy)
 	self.columns[clicked]:mouse_released(ix, iy)
 end
-
-function Group:drop_column(ix, iy, iid)
-	if ix > self.x and ix < self.x + self.width
-	and iy >= self.y and iy <= self.y + self.height then
-		local scale = math.floor(self.width/self.count)
-		local index = math.floor((ix - self.x)/scale)
-		if ix >= self.columns[index].x and ix <= self.columns[index].x+WIDTH
-		and iy >= self.columns[index].y + self.columns[index].offset * (self.columns[index].count-1) -- What if empty colum? -1?
-		and iy <= self.columns[index].y + self.columns[index].offset * (self.columns[index].count-1) + HEIGHT then
-			return index
-		end
-	end
-	return -1
-end

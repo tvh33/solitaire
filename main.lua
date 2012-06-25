@@ -11,8 +11,7 @@ function love.load()
 		deck[i] = i
 	end
 
-	group = Group:new(20, 20, 700, 300, 7)
-	group2 = Group:new(20, 340, 500, 200, 4)
+	group = Group:new(20, 20, 700, 500, 7)
 end
 
 function love.update(dt)
@@ -21,7 +20,6 @@ end
 
 function love.draw()
 	group:draw()
-	group2:draw()
 end
 
 function love.keypressed(key)

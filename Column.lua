@@ -72,15 +72,5 @@ end
 function Column:mouse_released(ix, iy)
 	if self.dragging.active == true then
 		self.dragging.active = false
-		local res = group:drop_column(ix, iy)
-		if res == -1 or res == self.id then
-			return
-		end
-		local j = 0
-		for i=self.dragging.index,self.count do
-			group.columns[res]:add_card(self.cards[i])
-			j = j + 1
-		end
-		self:remove_card(j)
 	end
 end
