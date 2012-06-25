@@ -1,21 +1,18 @@
 require "Column"
 require "Group"
+require "Deck"
 require "consts"
 
 function love.load()
-	column_array = {}
-	deck = {}
-	cards_left = 52
-
-	for i=1,52 do
-		deck[i] = i
-	end
-
-	group = Group:new(20, 20, 700, 500, 7)
+	Selected = -1
+	deck = Deck:new(52)
+	group = Group:new(20, 20, 700, 500, 4)
 end
 
 function love.update(dt)
-	group:update(dt)
+	if Selected ~= -1 then
+		Selected:update(dt)
+	end
 end
 
 function love.draw()
@@ -25,42 +22,9 @@ end
 function love.keypressed(key)
 	if key == " " then
 		for i=0,group.count-1 do
-			--column_array[i]:add_card(get_card())
-			group.columns[i]:add_card(get_card())
-		end
-	elseif key == "r" then
-		for i=0,group.count-1 do
-			--column_array[i]:remove_card()
-			group.columns[i]:remove_card(1)
+			group.columns[i]:add_card(deck:get_card())
 		end
 	end
-end
-
-function get_card()
-	if cards_left >= 1 then
-		local index = math.random(cards_left)
-		local res = deck[index]	
-		--swap [cards_left] and [index]
-		deck[index] = deck[cards_left]
-		deck[cards_left] = res
-		cards_left = cards_left - 1
-		return res
-	end
-	return -1
-end
-
-function id_to_string(id)
-	if id == -1 then
-		return "no card"
-	end
-	local house = math.floor(id/13)
-	local value = (id%12)+1
-	local res = (value+1).." of "
-	if (house == SPADES) then res = res.."spades"
-	elseif (house == HEARTS) then res = res.."hearts"
-	elseif (house == CLUBS) then res = res.."clubs"
-	else res = res.."diamonds" end
-	return res 
 end
 
 function love.mousepressed(x, y, button)
@@ -71,6 +35,12 @@ end
 
 function love.mousereleased(x, y, button)
 	if button == "l" then
-		group:mouse_released(x, y)
+		if Selected ~= -1 then
+			Selected:mouse_released(x, y)
+		end
 	end
+end
+
+function find_target(ix, iy)
+	return group:find_target(ix, iy)
 end

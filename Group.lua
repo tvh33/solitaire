@@ -3,8 +3,6 @@ require "consts"
 Group = {}
 Group.__index = Group
 
-local clicked = 0
-
 function Group:new(ix, iy, iw, ih, ic)
 	local self = {
 		x = ix,
@@ -29,15 +27,13 @@ end
 function Group:draw()
 	love.graphics.rectangle("line", self.x, self.y, self.width, self.height)
 	for i=0,self.count-1 do
-		if i ~= clicked then
+		if Selected ~= self.columns[i] then
 			self.columns[i]:draw()
 		end
 	end
-	self.columns[clicked]:draw()
-end
-
-function Group:update(dt)
-	self.columns[clicked]:update(dt)
+	if Selected ~= -1 then
+		Selected:draw()
+	end
 end
 
 function Group:mouse_pressed(ix, iy)
@@ -45,11 +41,12 @@ function Group:mouse_pressed(ix, iy)
 	and iy >= self.y and iy <= self.y + self.height then
 		local scale = math.floor(self.width/self.count)
 		local index = math.floor((ix - self.x)/scale)
-		clicked = index
 		self.columns[index]:mouse_pressed(ix, iy)		
 	end
 end
 
-function Group:mouse_released(ix, iy)
-	self.columns[clicked]:mouse_released(ix, iy)
+function Group:find_target(ix, iy)
+	local scale = math.floor(self.width/self.count)
+	local index = math.floor((ix - self.x)/scale)
+	return self.columns[index]
 end

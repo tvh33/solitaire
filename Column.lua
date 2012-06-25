@@ -65,12 +65,37 @@ function Column:mouse_pressed(ix, iy)
 			self.dragging.ydif = (iy - self.y)-(tmp-1)*self.offset
 			self.dragging.dx = self.x
 			self.dragging.dy = self.y + tmp * self.offset
+			-- make global reference
+			Selected = self
 		end
 	end
 end
 
 function Column:mouse_released(ix, iy)
-	if self.dragging.active == true then
-		self.dragging.active = false
+	self.dragging.active = false
+	
+	
+	local target = find_target(ix, iy)
+	if target == Selected then
+		Selected = -1
+		return		
 	end
+	Selected = -1	
+	if target:receive(ix, iy, 2) == 1 then
+		j = 0
+		for i=self.dragging.index, self.count do
+			target:add_card(self.cards[i])
+			j = j + 1
+		end
+		self:remove_card(j)
+	end
+end
+
+function Column:receive(ix, iy, amount)
+	if ix >= self.x and ix <= self.x+WIDTH then
+		if iy >= self.y+(self.count-1)*self.offset and iy <= self.y+(self.count-1)*self.offset+HEIGHT then
+			return 1
+		end
+	end
+	return -1
 end
