@@ -2,7 +2,7 @@ Group = {}
 Group.__index = Group
 
 -- x, y, height, count, gap, mode
-function Group:new(ix, iy, ih, ic, ig, mode)
+function Group:new(ix, iy, ih, ic, ig, imode)
 	local self = {
 		x = ix,
 		y = iy,
@@ -10,11 +10,19 @@ function Group:new(ix, iy, ih, ic, ig, mode)
 		height = ih,
 		gap = ig,
 		count = ic,
+		mode = imode,
 		columns = {}
 	}
 	setmetatable(self, Group)
-	self:init(mode)
+	self:init(imode)
 	return self
+end
+
+function Group:restart()
+	for i=0,self.count-1 do
+		self.columns[i]:restart()
+	end
+	self:init(self.mode)
 end
 
 function Group:init(mode)

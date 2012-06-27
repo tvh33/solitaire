@@ -14,6 +14,11 @@ function Column:new(ix, iy)
 	return self
 end
 
+function Column:restart()
+	self.count = 0
+	self.cards = {}
+end
+
 function Column:draw()
 	local ii
 	love.graphics.drawq(SPRITE, BASE[0], self.x-SCALE, self.y-SCALE, 0, SCALE, SCALE, 0, 0, 0, 0)
@@ -98,13 +103,14 @@ end
 
 function Column:mouse_released(ix, iy)
 	self.dragging.active = false
-	local target = find_target(ix, iy)
+	--local target = find_target(ix, iy)
+	local target = find_target(self.dragging.dx+WIDTH/2, self.dragging.dy+HEIGHT/2)
 	if target == Selected or target == -1 or target == nill then
 		Selected = -1
 		return		
 	end
 	Selected = -1	
-	if target:receive(ix, iy, (self.count-self.dragging.index+1), self.cards[self.dragging.index]) then
+	if target:receive(self.dragging.dx+WIDTH/2, self.dragging.dy+HEIGHT/2, (self.count-self.dragging.index+1), self.cards[self.dragging.index]) then
 		if self.cards[self.dragging.index-1] ~= nil and self.cards[self.dragging.index-1] >= 100 then
 			self.cards[self.dragging.index-1] = self.cards[self.dragging.index-1] - 100
 		end
@@ -115,6 +121,7 @@ function Column:mouse_released(ix, iy)
 		end
 		self:remove_card(j)
 	end
+	check_win()
 end
 
 function Column:receive(ix, iy, amount, id)

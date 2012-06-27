@@ -4,6 +4,7 @@ Deck.__index = Deck
 function Deck:new(amount)
 	local self = {
 		array = {},
+		max = amount-1,
 		cards_left = amount-1
 	}
 	setmetatable(self, Deck)
@@ -15,6 +16,10 @@ function Deck:init()
 	for i=0,51 do
 		self.array[i] = i
 	end
+end
+
+function Deck:restart()
+	self.cards_left = self.max
 end
 
 function Deck:get_card()

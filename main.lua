@@ -5,8 +5,14 @@ require "Group"
 require "Deck"
 require "consts"
 
+local PLAYING = 0
+local WON = 1
+local game_state = PLAYING
+
 function love.load()
 	math.randomseed(os.time())
+	math.random()
+	math.random()
 	Selected = -1
 	deck = Deck:new(52)
 	game = {}
@@ -28,19 +34,19 @@ function love.draw()
 	if Selected ~= -1 then
 		Selected:draw()
 	end
+	if game_state == WON then
+		love.graphics.print("YOU WON", 0, 0)
+	end
 end
 
 function love.keypressed(key)
-	if key == " " then
-		for j=0,0 do
-			for i=0,game[j].count-1 do
-				local tmp = FACE_DOWN
-				if game[j].columns[i].count > 3 then tmp = FACE_UP end
-				game[j].columns[i]:add_card(deck:get_card(), tmp)
-			end
-		end
-	elseif key == "f" then
+	if key == "f" then
 		love.graphics.toggleFullscreen()
+	elseif key == "r" then
+		deck:restart()
+		for i=0,2 do
+			game[i]:restart()
+		end
 	end
 end
 
@@ -68,4 +74,13 @@ function find_target(ix, iy)
 		end
 	end
 	return -1
+end
+
+function check_win()
+	for i=0,3 do
+		if game[1].columns[i].count < 13 then
+			return false
+		end
+	end
+	return true
 end

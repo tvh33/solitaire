@@ -14,6 +14,11 @@ function Slot:new(ix, iy, ia)
 	return self
 end
 
+function Slot:restart()
+	self.count = 0
+	self.cards = {}
+end
+
 function Slot:draw()
 	love.graphics.drawq(SPRITE, BASE[self.accept+1], self.x-SCALE, self.y-SCALE, 0, SCALE, SCALE, 0, 0, 0, 0)
 	if self.count > 0 then
@@ -69,18 +74,31 @@ function Slot:check_collision(ix, iy, mode)
 	return false
 end
 
+function Slot:check_drop()
+	local ix = Selected.dragging.dx
+	local iy = Selected.dragging.dy
+	local iw = WIDTH/2
+	local ih = HEIGHT/2
+	if ix + iw >= self.x and ix + iw <= self.x+WIDTH
+	and iy + ih >= self.y and iy + ih <= self.y+HEIGHT then
+		return true
+	end
+	return false
+end
+
 function Slot:mouse_released(ix, iy)
 	self.dragging.active = false
-	local target = find_target(ix, iy)
+	local target = find_target(self.dragging.dx+WIDTH/2, self.dragging.dy+HEIGHT/2)
 	if target == Selected or target == -1 then
 		Selected = -1
 		return		
 	end
 	Selected = -1	
-	if target:receive(ix, iy, 1, self.cards[self.count]) then
+	if target:receive(self.dragging.dx+WIDTH/2, self.dragging.dy+HEIGHT/2, 1, self.cards[self.count]) then
 		target:add_card(self.cards[self.count], FACE_UP)
 		self:remove_card(1)
 	end
+	check_win()
 end
 
 function Slot:receive(ix, iy, amount, id)
@@ -89,5 +107,6 @@ function Slot:receive(ix, iy, amount, id)
 			return true
 		end
 	end
+	game_state = WON
 	return false
 end

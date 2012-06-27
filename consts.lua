@@ -20,7 +20,8 @@ COLUMN = 2
 FACE_UP = 0
 FACE_DOWN = 1
 
-SPRITE = love.graphics.newImage("sprite_sheet.png")
+-- sprite business
+SPRITE = love.graphics.newImage("res/sprite_sheet.png")
 SPRITE:setFilter("nearest", "nearest")
 SPRITE_SHEET = {}
 for i=0,3 do
@@ -31,6 +32,6 @@ for i=0,3 do
 end
 CARD_BACK = love.graphics.newQuad(0, 4*24, 18, 24, 256, 128)
 BASE = {}
-for i=0,4 do
+for i=0,6 do
 	BASE[i] = love.graphics.newQuad(18+i*20, 4*24, 20, 26, 256, 128)
 end
